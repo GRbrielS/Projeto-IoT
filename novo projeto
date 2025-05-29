@@ -1,0 +1,30 @@
+const int sensorHall = 2;      // Pino do sensor Hall
+const int ledVermelho = 13;    // LED vermelho
+const int buzzer = 12;         // Buzzer ativo
+
+void setup() {
+  pinMode(sensorHall, INPUT);
+  pinMode(ledVermelho, OUTPUT);
+  pinMode(buzzer, OUTPUT);
+  digitalWrite(ledVermelho, LOW);
+  digitalWrite(buzzer, LOW);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int estadoSensor = digitalRead(sensorHall);
+
+  if (estadoSensor == LOW) {
+    // Ímã presente → porta FECHADA
+    digitalWrite(ledVermelho, HIGH);  // Liga LED
+    digitalWrite(buzzer, LOW);        // Buzzer desligado
+    Serial.println("Porta FECHADA");
+  } else {
+    // Ímã ausente → porta ABERTA
+    digitalWrite(ledVermelho, LOW);   // Desliga LED
+    digitalWrite(buzzer, HIGH);       // Liga buzzer
+    Serial.println("Porta ABERTA");
+  }
+
+  delay(200);
+}
