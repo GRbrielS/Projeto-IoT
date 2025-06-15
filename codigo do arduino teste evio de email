@@ -1,0 +1,22 @@
+int sensorHall = 2;  
+int estadoAnterior = HIGH;
+
+void setup() {
+  pinMode(sensorHall, INPUT_PULLUP);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int estadoAtual = digitalRead(sensorHall);
+
+  if (estadoAtual != estadoAnterior) {
+    if (estadoAtual == HIGH) {
+      Serial.println("ALERTA: Porta aberta");
+    } else {
+      Serial.println("Porta fechada");
+    }
+    estadoAnterior = estadoAtual;
+  }
+
+  delay(100); 
+}
