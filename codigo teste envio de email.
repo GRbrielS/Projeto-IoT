@@ -1,0 +1,44 @@
+import serial
+import smtplib
+import time
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+# Configurações de email
+EMAIL_REMETENTE = "arduinosensor9@gmail.com"
+EMAIL_SENHA = "xgrvfrxpbgynbnpa" 
+EMAIL_DESTINO = "jorgeluizdefrancamendes@gmail.com"
+
+# Configuração da porta serial
+porta = serial.Serial('COM6', 9600)  # Substitua COM3 pela porta correta
+time.sleep(2)  # Aguarda conexão estabilizar
+
+def enviar_email():
+    assunto = "🚨 Alerta: Porta Aberta"
+    corpo = "O sensor Hall detectou que a porta foi aberta."
+
+    msg = MIMEMultipart()
+    msg['From'] = EMAIL_REMETENTE
+    msg['To'] = EMAIL_DESTINO
+    msg['Subject'] = assunto
+
+    msg.attach(MIMEText(corpo, 'plain'))
+
+    try:
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(EMAIL_REMETENTE, EMAIL_SENHA)
+        server.send_message(msg)
+        server.quit()
+        print("Email enviado com sucesso!")
+    except Exception as e:
+        print("Erro ao enviar o email:", e)
+
+# Loop que escuta o Arduino
+while True:
+    if porta.in_waiting > 0:
+        linha = porta.readline().decode('utf-8').strip()
+        print("Arduino:", linha)
+
+        if "ALERTA: Porta aberta" in linha:
+            enviar_email()
